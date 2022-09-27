@@ -25,15 +25,21 @@ public class FileWriterObj implements Runnable {
     	System.out.println("task started");
 
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(new File(filename)));
-			writer.append("\n"+key);
-			writer.append("\n"+value);
-			writer.append("\n"+isDeleted);
-			writer.close();
+//			BufferedWriter writer = new BufferedWriter(new FileWriter(new File(filename)));
+//			writer.append("\n"+key);
+//			writer.append("\n"+value);
+//			writer.append("\n"+isDeleted);
+//			writer.close();
+			FileWriter filewriter= new FileWriter((new File(filename)));
+			filewriter.write(key);
+			filewriter.write(value);
+			filewriter.write(isDeleted);
+			filewriter.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	System.out.println("task endede");
+    	System.out.println("task ended");
 
 	}
 

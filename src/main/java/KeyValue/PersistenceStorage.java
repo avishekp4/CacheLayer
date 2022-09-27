@@ -7,34 +7,37 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class PersistanceStorage {
-	File persist = new File("persistance.txt");
-	String fileName = "D:\\personal_docs\\paroi_proj_cache\\CacheLayer\\src\\main\\java\\KeyValue\\persistance.txt";
-	public static PersistanceStorage persistanceStorage = null;
+public class PersistenceStorage {
+	static File persist;
+	String fileName = "/Users/samrat/persistence.txt";
+	public static PersistenceStorage persistenceStorage = null;
 	ExecutorService exService = new ThreadPoolExecutor(5, 5, 5000L, TimeUnit.MILLISECONDS,
 			new ArrayBlockingQueue<Runnable>(100, true));
 
-	public static PersistanceStorage getInstance() {
-    	System.out.println("PersistanceStorage  storage");
-
-		if (persistanceStorage == null) {
-			persistanceStorage = new PersistanceStorage();
+	public static PersistenceStorage getInstance() {
+		System.out.println("Persistence Storage  storage");
+		if (persistenceStorage == null) {
+			persistenceStorage = new PersistenceStorage();
 		}
-		return persistanceStorage;
+		return persistenceStorage;
 	}
 
 	public void addData(String key, String value, String isDeleted) {
 
-		exService.submit(new FileWriterObj(fileName, key, value, isDeleted));
-		/*
-		 * BufferedWriter writer = new BufferedWriter(new FileWriter(persist));
-		 * writer.append(key); writer.append(value); writer.append(isDeleted);
-		 * writer.close();
-		 */
+		//exService.submit(new FileWriterObj(fileName, key, value, isDeleted));
 
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(persist));
+			writer.append(key);
+			writer.append(value);
+			writer.append(isDeleted);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	public CacheStorage reconstructCache() {
+	public static CacheStorage reconstructCache() {
 		CacheStorage cacheStorage = CacheStorage.getInstance();
 		String key, value, isDeleted;
 		try {
@@ -69,9 +72,12 @@ public class PersistanceStorage {
 		}
 	}
 
-	public PersistanceStorage() {
+	private PersistenceStorage() {
 		try {
-			persist.createNewFile();
+			persist = new File(fileName);
+			if (persist.createNewFile()) {
+				System.out.println("Created a new File");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
